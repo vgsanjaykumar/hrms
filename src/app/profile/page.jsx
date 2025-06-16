@@ -55,6 +55,6 @@ export default function Profile() {
             </main>
         </div>
     ) : (
-        <div className="text-center p-10">Redirecting to login...</div>
+        <div className="text-center p-10">Redirecting to login</div>
     );
 }

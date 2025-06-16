@@ -24,7 +24,7 @@ export default function Login() {
             <div className="w-96 shadow-lg p-10 rounded-xl text-center">
                 <div className="mb-6">
                    
-                    <h1 className="text-2xl font-bold text-[#34b6b8]">Sign in to Diprella</h1>
+                    <h1 className="text-2xl font-bold text-[#34b6b8]">Login</h1>
                 </div>
 
                 
