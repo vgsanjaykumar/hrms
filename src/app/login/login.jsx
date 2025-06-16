@@ -23,7 +23,7 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center bg-white">
             <div className="w-96 shadow-lg p-10 rounded-xl text-center">
                 <div className="mb-6">
-                    {/* Logo placeholder */}
+                   
                     <h1 className="text-2xl font-bold text-[#34b6b8]">Sign in to Diprella</h1>
                 </div>
 
