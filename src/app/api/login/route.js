@@ -10,20 +10,19 @@ export async function POST(req) {
     const { email, password } = await req.json();
     const jwtSecret = process.env.JWT_SECRET || 'e7QTfpRylS3XERRdFRnZ7s0zrO79GDsfm4BHkL/Vv1o=';
 
-    // Find user
+   
     const user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) {
         return new Response('Invalid email or password', { status: 401 });
     }
 
-    // Generate JWT
+   
     const token = jwt.sign(
         { id: user._id, name: user.name, email: user.email, phone: user.phone },
         jwtSecret,
         { expiresIn: '7d' }
     );
 
-    // Return response and set token cookie
     const res = NextResponse.json({ message: 'Login successful' });
     res.cookies.set('token', token, {
         httpOnly: true,
