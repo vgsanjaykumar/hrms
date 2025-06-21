@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -61,9 +63,15 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
+                     <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
                         Forgot your password?
-                    </div>
+                        </div>
+                     <div className="text-center text-sm text-gray-500">
+                        Don’t have an account ? {''}                       
+                        <Link href="\signup" className="text-[#34b6b8] font-medium hover:underline">
+                            Create New
+                        </Link>
+                     </div>
                     <button
                         type="submit"
                         className="w-full bg-[#34b6b8] text-white py-2 rounded-full font-semibold hover:bg-[#2aa8a9] transition"
