@@ -1,60 +1,90 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
 
 export default function Profile() {
-    const { user, setUser } = useAuth();
+    const [user, setUser] = useState(null);
+    const [showSidebar, setShowSidebar] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) router.push('/login');
-    }, [user]);
+        async function fetchUser() {
+            const res = await fetch('/api/profile', { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                setUser(data);
+            } else {
+                router.push('/login');
+            }
+        }
+        fetchUser();
+    }, []);
 
-    const handleLogout = () => {
-        setUser(null);
+    const handleLogout = async () => {
+        await fetch('/api/logout', { credentials: 'include' });
         router.push('/login');
     };
 
-    return user ? (
-        <div className="min-h-screen flex bg-gray-50">
+    if (!user) return <p className="p-10 text-center">Loading profile...</p>;
 
-            <aside className="w-64 bg-[#34b6b8] text-white min-h-screen p-6 space-y-6">
-                <h2 className="text-2xl font-bold">HRMS</h2>
-                <nav className="flex flex-col gap-4">
-                    <a href="#" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded">Dashboard</a>
-                    <a href="#" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded">Employees</a>
-                    <a href="#" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded">Leave Requests</a>
-                    <a href="#" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded">Settings</a>
-                </nav>
-                <button onClick={handleLogout} className="mt-auto bg-white text-[#34b6b8] font-semibold py-2 px-4 rounded hover:bg-gray-100">
-                    Logout
+    return (
+        <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
+            {/* Mobile Header */}
+            <div className="md:hidden bg-[#34b6b8] text-white flex justify-between items-center p-4">
+                <h2 className="text-xl font-bold">HRMS</h2>
+                <button onClick={() => setShowSidebar(!showSidebar)}>
+                    <img src="https://img.icons8.com/ios-filled/30/ffffff/menu--v1.png" alt="Menu" />
                 </button>
+            </div>
+
+            {/* Sidebar */}
+            <aside className={`bg-[#34b6b8] text-white w-full md:w-64 p-6 space-y-6 ${showSidebar ? 'block' : 'hidden'} md:block`}>
+                <h2 className="text-2xl font-bold hidden md:block">HRMS</h2>
+                <nav className="flex flex-col gap-4">
+                    <a href="#dashboard" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded transition">Dashboard</a>
+                    <a href="#employees" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded transition">Employees</a>
+                    <a href="#leaves" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded transition">Leave Requests</a>
+                    <a href="#settings" className="hover:bg-white hover:text-[#34b6b8] p-2 rounded transition">Settings</a>
+                </nav>
+                <div className="pt-6">
+                    <button onClick={handleLogout} className="w-full bg-white text-[#34b6b8] font-semibold py-2 px-4 rounded hover:bg-gray-100 transition">
+                        Logout
+                    </button>
+                </div>
             </aside>
 
-
-            <main className="flex-1 p-10">
-                <h1 className="text-3xl font-semibold text-[#34b6b8] mb-4">Welcome, {user.email}</h1>
-                <p className="text-gray-700">You are now viewing the HRMS dashboard.</p>
-
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                    <div className="bg-white shadow-md p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold text-[#34b6b8]">Total Employees</h3>
-                        <p className="text-3xl mt-2 font-bold">120</p>
-                    </div>
-                    <div className="bg-white shadow-md p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold text-[#34b6b8]">Pending Leave Requests</h3>
-                        <p className="text-3xl mt-2 font-bold">6</p>
-                    </div>
-                    <div className="bg-white shadow-md p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold text-[#34b6b8]">New Joinees</h3>
-                        <p className="text-3xl mt-2 font-bold">3</p>
+            {/* Main Content */}
+            <main className="flex-1 p-6 sm:p-10">
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-2xl font-semibold text-[#34b6b8]">Dashboard</h1>
+                    {/* Compact Profile Card */}
+                    <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow">
+                        <img src="https://img.icons8.com/ios-filled/40/34b6b8/user-male-circle.png" className="w-10 h-10 rounded-full" alt="User" />
+                        <div className="text-sm">
+                            <p className="text-[#34b6b8] font-semibold">{user.name}</p>
+                            <p className="text-gray-600 text-xs">{user.email}</p>
+                        </div>
                     </div>
                 </div>
+
+                {/* Dashboard Section */}
+                <section id="dashboard" className="mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div className="bg-white rounded-lg shadow p-6 text-center">
+                            <p className="text-gray-500">Employees</p>
+                            <p className="text-2xl font-bold text-[#34b6b8]">25</p>
+                        </div>
+                        <div className="bg-white rounded-lg shadow p-6 text-center">
+                            <p className="text-gray-500">Leave Requests</p>
+                            <p className="text-2xl font-bold text-[#34b6b8]">5</p>
+                        </div>
+                        <div className="bg-white rounded-lg shadow p-6 text-center">
+                            <p className="text-gray-500">Notifications</p>
+                            <p className="text-2xl font-bold text-[#34b6b8]">3</p>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
-    ) : (
-        <div className="text-center p-10">Redirecting to login</div>
     );
 }
