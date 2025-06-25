@@ -6,11 +6,22 @@ import Link from 'next/link';
 export default function Login() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const router = useRouter();
+
+    const validateFields = () => {
+        const newErrors: { email?: string; password?: string } = {};
+        if (!email) newErrors.email = 'Email is required';
+        if (!password) newErrors.password = 'Password is required';
+        return newErrors;
+    };
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!email || !password) return alert('Please enter credentials');
+
+        const validationErrors = validateFields();
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length > 0) return;
 
         const res = await fetch('/api/login', {
             method: 'POST',
@@ -29,55 +40,81 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="w-96 shadow-lg p-10 rounded-xl text-center">
-                <h1 className="text-2xl font-bold text-[#34b6b8] mb-4">Login</h1>
+        <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] p-4">
+            <div className="max-w-md w-full bg-white rounded-2xl p-8 shadow-lg text-center">
+                <img
+                    src="/assets/Hashtag-Logo.png"
+                    alt="Logo"
+                    className="mx-auto mb-6 w-65 h-12"
+                />
+                <h1 className="text-3xl font-semibold mb-2">Login</h1>
+                <p className="text-gray-600 mb-6">
+                    Login to your account below
+                </p>
 
-                <div className="flex justify-center gap-4 mb-4">
-                    <button className="bg-gray-100 p-2 rounded-full hover:bg-gray-200">
-                        <img src="https://img.icons8.com/ios-filled/24/000000/facebook.png" alt="Facebook" />
-                    </button>
-                    <button className="bg-gray-100 p-2 rounded-full hover:bg-gray-200">
-                        <img src="https://img.icons8.com/ios-filled/24/000000/google-logo.png" alt="Google" />
-                    </button>
-                    <button className="bg-gray-100 p-2 rounded-full hover:bg-gray-200">
-                        <img src="https://img.icons8.com/ios-filled/24/000000/linkedin.png" alt="LinkedIn" />
-                    </button>
-                </div>
-
-                <p className="text-gray-500 text-sm mb-4">or use your email account:</p>
+                <button
+                    type="button"
+                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 mb-6 hover:bg-gray-100 transition"
+                >
+                    <img
+                        src="https://img.icons8.com/color/24/google-logo.png"
+                        alt="Google"
+                        className="inline-block"
+                    />
+                    Continue with Google
+                </button>
 
                 <form onSubmit={handleLogin} className="space-y-4 text-left">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full px-4 py-2 bg-teal-400 rounded focus:outline-none focus:ring-2 focus:ring-[#34b6b8]"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="w-full px-4 py-2 bg-teal-400 rounded focus:outline-none focus:ring-2 focus:ring-[#34b6b8]"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                     <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-                        Forgot your password?
-                        </div>
-                     <div className="text-center text-sm text-gray-500">
-                        Don’t have an account ? {''}                       
-                        <Link href="/signup" className="text-[#34b6b8] font-medium hover:underline">
-                            Create New
-                        </Link>
-                     </div>
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Enter email..."
+                            className={`w-full px-4 py-2 border ${
+                                errors.email ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600`}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter password..."
+                            className={`w-full px-4 py-2 border ${
+                                errors.password ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600`}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {errors.password && (
+                            <p className="text-red-500 text-sm">{errors.password}</p>
+                        )}
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full bg-[#34b6b8] text-white py-2 rounded-full font-semibold hover:bg-[#2aa8a9] transition"
+                        className="w-full bg-purple-700 text-white py-2 rounded-md font-semibold hover:bg-purple-800 transition"
                     >
-                        SIGN IN
+                        Login
                     </button>
                 </form>
+
+                <p className="mt-6 text-sm text-gray-600">
+                    Don't have an account?{' '}
+                    <Link href="/signup" className="text-purple-700 font-medium hover:underline">
+                        Sign up
+                    </Link>
+                </p>
             </div>
         </div>
     );

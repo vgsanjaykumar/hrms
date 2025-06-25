@@ -110,7 +110,7 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="max-w-3xl w-full shadow-lg p-10 rounded-xl text-left">
-        <img src="/assets/Hashtag-Logo.png" alt="Hazh Tech Logo" className="mb-6" />
+        <img src="/assets/Hashtag-Logo.png" alt="Hazh Tech Logo" className="mb-6 w-60" />
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign up</h1>
         <p className="text-gray-600 mb-8">
           Enter your details below to create your account and get started.
