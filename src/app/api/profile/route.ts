@@ -1,34 +1,22 @@
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
-import { NextResponse } from 'next/server';
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'e7QTfpRylS3XERRdFRnZ7s0zrO79GDsfm4BHkL/Vv1o=');
+const jwtKey = process.env.JWT_SECRET || 'e7QTfpRylS3XERRdFRnZ7s0zrO79GDsfm4BHkL/Vv1o=';
+const secret = new TextEncoder().encode(jwtKey);
 
-interface Payload {
-    name: string;
-    email: string;
-    phone?: string;
-}
-
-export async function GET() {
-    try {
-        // ✅ cookies() is synchronous — DO NOT await
-        const cookieStore = await cookies();
-        const token = cookieStore.get('token')?.value;
-
-        if (!token) {
-            return new Response('Unauthorized', { status: 401 });
-        }
-
-        const { payload } = await jwtVerify(token, secret) as { payload: Payload };
-
-        return NextResponse.json({
-            name: payload.name,
-            email: payload.email,
-            phone: payload.phone,
-        });
-    } catch (err) {
-        console.error('JWT error:', err);
-        return new Response('Invalid Token', { status: 403 });
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get('token')?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { payload } = await jwtVerify(token, secret);
+    const { name, email } = payload as { name: string; email: string };
+
+    return NextResponse.json({ name, email });
+  } catch (error) {
+    console.error('JWT verification failed:', error);
+    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+  }
 }

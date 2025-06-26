@@ -3,7 +3,7 @@ import mongoose, { Mongoose } from 'mongoose';
 const MONGODB_URI = "mongodb+srv://vgssanjay:sanjay%4096@cluster0.yqmgw.mongodb.net/hrms";
 
 if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI');
+    throw new Error('Please define the MONGODB_URI environment variable');
 }
 
 interface Cached {
@@ -12,22 +12,23 @@ interface Cached {
 }
 
 declare global {
-    // eslint-disable-next-line no-var
-    var mongoose: Cached | undefined;
+    // Avoid naming conflict with mongoose import
+    var _mongooseCache: Cached | undefined;
 }
 
-let cached: Cached = global.mongoose || { conn: null, promise: null };
+let cached: Cached = global._mongooseCache || { conn: null, promise: null };
 
 export async function connectDB(): Promise<Mongoose> {
     if (cached.conn) return cached.conn;
 
     if (!cached.promise) {
         cached.promise = mongoose.connect(MONGODB_URI, {
-            dbName: 'HRMS', // use exact existing DB name to avoid casing issue
+            dbName: 'HRMS',
         }).then((mongoose) => mongoose);
     }
 
     cached.conn = await cached.promise;
-    global.mongoose = cached;
+    global._mongooseCache = cached;
+
     return cached.conn;
 }
