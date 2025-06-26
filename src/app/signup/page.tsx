@@ -320,7 +320,7 @@ export default function Signup() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-[#0000008f] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md max-w-sm w-full text-center shadow-md">
             <p className="text-gray-800 mb-4">{modalMessage}</p>
             <button
