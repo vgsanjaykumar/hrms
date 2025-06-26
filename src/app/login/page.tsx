@@ -11,8 +11,18 @@ export default function Login() {
 
     const validateFields = () => {
         const newErrors: { email?: string; password?: string } = {};
-        if (!email) newErrors.email = 'Email is required';
-        if (!password) newErrors.password = 'Password is required';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!emailRegex.test(email)) {
+            newErrors.email = 'Invalid email address';
+        }
+
+        if (!password.trim()) {
+            newErrors.password = 'Password is required';
+        }
+
         return newErrors;
     };
 
@@ -29,13 +39,16 @@ export default function Login() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email, password }),
-            credentials: 'include' // include cookies from server (for token)
+            credentials: 'include'
         });
 
         if (res.ok) {
             router.push('/profile');
         } else {
-            alert(await res.text());
+            setErrors({
+                email: 'Invalid email or password',
+                password: 'Invalid email or password',
+            });
         }
     };
 
@@ -48,9 +61,7 @@ export default function Login() {
                     className="mx-auto mb-6 w-65 h-12"
                 />
                 <h1 className="text-3xl font-semibold mb-2">Login</h1>
-                <p className="text-gray-600 mb-6">
-                    Login to your account below
-                </p>
+                <p className="text-gray-600 mb-6">Login to your account below</p>
 
                 <button
                     type="button"
@@ -75,11 +86,13 @@ export default function Login() {
                             placeholder="Enter email..."
                             className={`w-full px-4 py-2 border ${
                                 errors.email ? 'border-red-500' : 'border-gray-300'
-                            } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600`}
+                            } rounded-md focus:outline-none focus:ring-2 ${
+                                errors.email ? 'focus:ring-red-500' : 'focus:ring-purple-600'
+                            }`}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                     </div>
 
                     <div>
@@ -92,12 +105,14 @@ export default function Login() {
                             placeholder="Enter password..."
                             className={`w-full px-4 py-2 border ${
                                 errors.password ? 'border-red-500' : 'border-gray-300'
-                            } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600`}
+                            } rounded-md focus:outline-none focus:ring-2 ${
+                                errors.password ? 'focus:ring-red-500' : 'focus:ring-purple-600'
+                            }`}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         {errors.password && (
-                            <p className="text-red-500 text-sm">{errors.password}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                         )}
                     </div>
 

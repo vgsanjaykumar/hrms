@@ -13,6 +13,19 @@ const countryOptions = getNames().map((name: string) => ({
   value: name,
 }));
 
+// Password strength function
+const getPasswordStrength = (password: string) => {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { label: 'Weak', color: 'bg-red-500', width: 'w-1/3' };
+  if (score === 2 || score === 3) return { label: 'Medium', color: 'bg-yellow-500', width: 'w-2/3' };
+  return { label: 'Strong', color: 'bg-green-500', width: 'w-full' };
+};
+
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,6 +40,8 @@ export default function Signup() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
+  const strength = getPasswordStrength(password);
+
   const handleDobChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setDob(value);
@@ -34,10 +49,7 @@ export default function Signup() {
     const currentYear = new Date().getFullYear();
 
     if (year > currentYear) {
-      setErrors((prev: any) => ({
-        ...prev,
-        dob: 'Year cannot be in the future',
-      }));
+      setErrors((prev: any) => ({ ...prev, dob: 'Year cannot be in the future' }));
     } else {
       setErrors((prev: any) => {
         const updated = { ...prev };
@@ -49,17 +61,26 @@ export default function Signup() {
 
   const validateFields = () => {
     const newErrors: any = {};
-    if (!name) newErrors.name = 'Name is required';
-    if (!email) newErrors.email = 'Email is required';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name.trim()) newErrors.name = 'Name is required';
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = 'Invalid email address';
+    }
+
     if (!dob) newErrors.dob = 'Date of birth is required';
     if (dob && new Date(dob).getFullYear() > new Date().getFullYear()) {
       newErrors.dob = 'Year cannot be in the future';
     }
+
     if (!phone) newErrors.phone = 'Phone number is required';
     if (!nationality) newErrors.nationality = 'Nationality is required';
     if (!idType) newErrors.idType = 'ID type is required';
     if (!password) newErrors.password = 'Password is required';
     if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+
     return newErrors;
   };
 
@@ -123,7 +144,9 @@ export default function Signup() {
             <input
               type="text"
               placeholder="Enter your name"
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -136,7 +159,9 @@ export default function Signup() {
             <input
               type="email"
               placeholder="example@gmail.com"
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -148,7 +173,9 @@ export default function Signup() {
             <label className="block text-gray-700 mb-1">Date of Birth</label>
             <input
               type="date"
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.dob ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={dob}
               onChange={handleDobChange}
               max={new Date().toISOString().split('T')[0]}
@@ -167,6 +194,7 @@ export default function Signup() {
                 width: '100%',
                 height: '40px',
                 fontSize: '16px',
+                borderColor: errors.phone ? 'red' : '#ccc',
               }}
               containerStyle={{ width: '100%' }}
               buttonStyle={{ borderRight: '1px solid #ccc' }}
@@ -186,6 +214,14 @@ export default function Signup() {
               className="text-black"
               placeholder="Select nationality"
               isSearchable
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderColor: errors.nationality ? 'red' : '#ccc',
+                  boxShadow: 'none',
+                  '&:hover': { borderColor: errors.nationality ? 'red' : '#aaa' },
+                }),
+              }}
             />
             {errors.nationality && <p className="text-red-500 text-sm">{errors.nationality}</p>}
           </div>
@@ -194,7 +230,9 @@ export default function Signup() {
           <div>
             <label className="block text-gray-700 mb-1">ID Type</label>
             <select
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.idType ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={idType}
               onChange={(e) => setIdType(e.target.value)}
             >
@@ -212,11 +250,24 @@ export default function Signup() {
             <input
               type="password"
               placeholder="Enter password"
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {password && (
+              <div className="mt-2">
+                <div className="flex justify-between text-sm mb-1 text-gray-600">
+                  <span>Password strength:</span>
+                  <span className="font-semibold text-gray-800">{strength.label}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded h-2">
+                  <div className={`h-2 rounded ${strength.color} ${strength.width}`}></div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Confirm Password */}
@@ -225,7 +276,11 @@ export default function Signup() {
             <input
               type="password"
               placeholder="Confirm password"
-              className="w-full px-4 py-2 border rounded"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.confirmPassword
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-purple-600'
+              }`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
