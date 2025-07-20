@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { EnvironmentOutlined, PhoneOutlined, ManOutlined, WomanOutlined, GiftOutlined, MailOutlined } from '@ant-design/icons';
+import AlgoliaPlacesInput from './AlgoliaPlacesInput';
+
 
 interface Education {
   course: string;

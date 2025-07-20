@@ -71,10 +71,11 @@ export default function Profile() {
             <aside className={` bg-purple-600 text-white w-full md:w-64 p-6 space-y-6 ${showSidebar ? 'block' : 'hidden'} md:block`}>
                 <h2 className="text-2xl font-bold hidden md:block">HRMS</h2>
                 <nav className="flex flex-col gap-4">
-                    <a href="#dashboard" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Dashboard</a>
-                    <a href="#employees" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Employees</a>
-                    <a href="#leaves" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Leave Requests</a>
-                    <a href="#settings" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Settings</a>
+                    <a href="/profile/dashboard" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Dashboard</a>
+                    <a href="#Projects" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Projects</a>
+                    <a href="#PayRoll" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">PayRoll</a>
+                    <a href="#Attendance" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Attendance</a>
+                    <a href="/profile/my-profile" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">My Profile</a>
                 </nav>
                 <div className="pt-6">
                     <button onClick={handleLogout} className="w-full bg-white text-purple-600 font-semibold py-2 px-4 rounded hover:bg-gray-100 transition">

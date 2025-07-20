@@ -43,7 +43,7 @@ export default function Login() {
         });
 
         if (res.ok) {
-            router.push('/profile');
+            router.push('/profile/dashboard');
         } else {
             setErrors({
                 email: 'Invalid email or password',
