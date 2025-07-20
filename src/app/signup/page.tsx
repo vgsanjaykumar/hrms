@@ -33,6 +33,8 @@ export default function Signup() {
   const [phone, setPhone] = useState('');
   const [nationality, setNationality] = useState({ label: 'India', value: 'India' });
   const [idType, setIdType] = useState('');
+  const [address, setAddress] = useState('');
+  const [gender, setGender] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<any>({});
@@ -77,6 +79,8 @@ export default function Signup() {
 
     if (!phone) newErrors.phone = 'Phone number is required';
     if (!nationality) newErrors.nationality = 'Nationality is required';
+    if (!address) newErrors.address = 'Address is required';
+    if (!gender) newErrors.gender = 'Gender is required';
     if (!idType) newErrors.idType = 'ID type is required';
     if (!password) newErrors.password = 'Password is required';
     if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
@@ -99,6 +103,8 @@ export default function Signup() {
         dob,
         phone,
         nationality: nationality.value,
+        address,
+        gender,
         idType,
         password,
       }),
@@ -224,6 +230,40 @@ export default function Signup() {
               }}
             />
             {errors.nationality && <p className="text-red-500 text-sm">{errors.nationality}</p>}
+          </div>
+
+          {/* Address */}
+          <div className="col-span-2">
+            <label className="block text-gray-700 mb-1">Address</label>
+            {/* Replace with address autocomplete library if desired */}
+            <input
+              type="text"
+              placeholder="Enter your address"
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.address ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+          </div>
+          
+          {/* Gender */}
+          <div className="col-span-2">
+            <label className="block text-gray-700 mb-1">Gender</label>
+            <select
+              className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+                errors.gender ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-600'
+              }`}
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
           </div>
 
           {/* ID Type */}
