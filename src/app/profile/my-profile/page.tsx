@@ -226,7 +226,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
       )}
   
       {/* Main content */}
-<main  className={`p-4 md:p-8 overflow-auto min-h-screen bg-white md:ml-0 transition-all duration-300 ${sidebarOpen ? 'blur-sm pointer-events-none select-none' : ''  }`}
+<main  className={`p-4 md:p-8 overflow-auto min-h-screen bg-white md:ml-64 transition-all duration-300 ${sidebarOpen ? 'blur-sm pointer-events-none select-none' : ''  }`}
 >       
 
 
@@ -247,7 +247,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
                 className="w-full h-full object-cover rounded-full"
               />
               ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-600 rounded-full text-gray-400 text-6xl">
+              <div className="w-full h-full flex items-center justify-center bg-gray-300 rounded-full text-gray-600 text-6xl">
                 <UserOutlined className="h-16 w-16" />
               </div>
               )}
@@ -430,9 +430,10 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
                           setShowEditEducation(true);
                           setEditingIndex(idx);
                         }}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-purple-600 hover:text-blue-800"
                       >
-                        ✏️
+                        <EditOutlined className="h-4 w-4" />
+                        
                       </button>
                       <button
                         aria-label="Delete education"
