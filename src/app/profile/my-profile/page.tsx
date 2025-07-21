@@ -197,7 +197,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
                 </button>
             </div>
         <aside className={`fixed top-0 left-0 w-64 h-screen bg-purple-700 text-white flex flex-col p-6 space-y-6 md:flex transition-transform transform z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-                <h2 className="text-2xl font-bold hidden md:block">HRMS</h2>
+                <h2 className="text-2xl font-bold hidden md:block"> Hazhtech HRMS</h2>
                 <nav className="flex flex-col space-y-4 overflow-y-auto">
                     <a href="/profile/dashboard" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Dashboard</a>
                     <a href="#Projects" className="hover:bg-white hover:text-purple-600 p-2 rounded transition">Projects</a>
