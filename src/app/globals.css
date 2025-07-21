@@ -69,3 +69,13 @@ textarea {
   font-weight: 500 !important;
   font-size: 1rem !important;
 }
+.soft-glow-hover {
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.soft-glow-hover:hover {
+  background: rgba(183, 0, 255, 0.1); /* subtle glow */
+  box-shadow: 0 0 10px rgba(190, 4, 247, 0.3);
+}

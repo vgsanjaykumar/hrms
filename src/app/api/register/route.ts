@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 export async function POST(request: NextRequest): Promise<Response> {
     try {
         await connectDB();
-        const { name, phone, email, password }: { name: string; phone: string; email: string; password: string } = await request.json();
+        const { name, phone, email, password, dob, gender }: { name: string; phone: string; email: string; password: string; dob: string; gender: string; } = await request.json();
 
         if (!name || !phone || !email || !password) {
             return new Response('All fields are required', { status: 400 });
@@ -23,6 +23,8 @@ export async function POST(request: NextRequest): Promise<Response> {
             phone,
             email,
             password: hashedPassword,
+            dob,
+            gender,
         });
 
         await newUser.save();

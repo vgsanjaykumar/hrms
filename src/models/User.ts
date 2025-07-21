@@ -33,20 +33,28 @@ const EducationSchema = new Schema<EducationEntry>({
   endYear: { type: String, required: true },
 });
 
-const userSchema: Schema<IUser> = new Schema({
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
- // Optional profile fields
-  dob: String,
-  gender: String,
-  location: String,
-  image: String,
-  skills: [String],
-  education: [EducationSchema],
-},{ timestamps: true });
-
+const userSchema: Schema<IUser> = new Schema(
+    {
+    name: String,
+    email: { type: String, unique: true },
+    password: String,
+    phone: String,
+    dob: String,
+    gender: String,
+    location: String,
+    image: String,
+    skills: [String],
+    education: [
+      {
+        course: String,
+        organization: String,
+        startTime: String,
+        endTime: String,
+        score: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
 const User: Model<IUser> = mongoose.models.User || model<IUser>('User', userSchema);
-
 export default User;
