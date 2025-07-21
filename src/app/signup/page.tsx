@@ -277,9 +277,9 @@ export default function Signup() {
               onChange={(e) => setIdType(e.target.value)}
             >
               <option value="">Select</option>
-              <option value="passport">Passport</option>
-              <option value="driver_license">Driver License</option>
-              <option value="national_id">National ID</option>
+              <option value="passport">Admin</option>
+              <option value="driver_license">HR</option>
+              <option value="national_id">Employee</option>
             </select>
             {errors.idType && <p className="text-red-500 text-sm">{errors.idType}</p>}
           </div>
