@@ -588,4 +588,3 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
       </main>
     </div>
   );
-}
