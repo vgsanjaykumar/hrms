@@ -54,7 +54,8 @@ export default function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-8 shadow-lg text-center">
+            <div className="max-w-md w-full
+             bg-white rounded-2xl p-8 shadow-lg text-center">
                 <img
                     src="/assets/Hashtag-Logo.png"
                     alt="Logo"
