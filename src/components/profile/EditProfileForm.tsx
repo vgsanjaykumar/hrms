@@ -7,13 +7,6 @@ interface EditProfileFormProps {
   college: string;
   skills: string[];
   location: string;
-  onSave: (data: {
-    education10th: string;
-    education12th: string;
-    college: string;
-    skills: string[];
-    location: string;
-  }) => void;
   onCancel: () => void;
 }
 
@@ -23,7 +16,6 @@ export default function EditProfileForm({
   college,
   skills,
   location,
-  onSave,
   onCancel,
 }: EditProfileFormProps) {
   const [formData, setFormData] = useState({
@@ -39,15 +31,31 @@ export default function EditProfileForm({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      education10th: formData.education10th,
-      education12th: formData.education12th,
-      college: formData.college,
-      skills: formData.skills.split(',').map(s => s.trim()),
-      location: formData.location,
-    });
+
+    try {
+      const res = await fetch('/api/user/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          education10th: formData.education10th,
+          education12th: formData.education12th,
+          college: formData.college,
+          skills: formData.skills
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean),
+          location: formData.location,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Update failed');
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Something went wrong!');
+    }
   };
 
   return (
