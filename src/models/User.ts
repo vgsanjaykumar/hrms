@@ -1,4 +1,5 @@
-import mongoose, { Document, Model, model, Schema } from 'mongoose';
+// models/User.ts
+import mongoose, { Document, Model, Schema, model } from 'mongoose';
 
 interface EducationEntry {
   course: string;
@@ -10,16 +11,14 @@ interface EducationEntry {
 }
 
 export interface IUser extends Document {
-    name: string;
-    phone: string;
-    email: string;
-    password: string;
-
-     // Profile fields
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
   dob?: string;
   gender?: string;
   location?: string;
-  image?: string; // base64 or image URL
+  image?: string;
   skills?: string[];
   education?: EducationEntry[];
 }
@@ -34,27 +33,20 @@ const EducationSchema = new Schema<EducationEntry>({
 });
 
 const userSchema: Schema<IUser> = new Schema(
-    {
-    name: String,
-    email: { type: String, unique: true },
-    password: String,
-    phone: String,
+  {
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
     dob: String,
     gender: String,
     location: String,
     image: String,
     skills: [String],
-    education: [
-      {
-        course: String,
-        organization: String,
-        startTime: String,
-        endTime: String,
-        score: String,
-      },
-    ],
+    education: [EducationSchema],
   },
   { timestamps: true }
 );
+
 const User: Model<IUser> = mongoose.models.User || model<IUser>('User', userSchema);
 export default User;
