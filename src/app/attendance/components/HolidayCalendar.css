@@ -1,0 +1,17 @@
+.holiday-tile {
+  background-color: #60a5fa !important; /* Tailwind blue-400 */
+  color: white !important;
+  border-radius: 0.5rem !important; /* rounded-lg */
+}
+
+.leave-tile {
+  background-color: #fbb6ce !important; /* Tailwind pink-300 */
+  color: white !important;
+  border-radius: 0.5rem !important;
+}
+
+.weekend-tile {
+  background-color: #e5e7eb !important; /* Tailwind gray-200 */
+  color: #6b7280 !important; /* Tailwind gray-500 */
+  border-radius: 0.5rem !important;
+}

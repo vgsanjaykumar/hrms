@@ -50,11 +50,17 @@ export default function EditProfileForm({
         }),
       });
 
-      if (!res.ok) throw new Error('Update failed');
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Update failed');
+      }
+      
       alert('Profile updated successfully!');
+      onCancel(); // Close the form on success
     } catch (error) {
       console.error('Error:', error);
-      alert('Something went wrong!');
+      alert(error instanceof Error ? error.message : 'Failed to update profile');
     }
   };
 

@@ -79,7 +79,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
             PayRoll
           </Link>
           <Link 
-            href="#Attendance" 
+            href="/attendance" 
             onClick={handleLinkClick}
             className={`p-2 rounded transition ${
               isActive('#Attendance') 

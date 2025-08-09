@@ -45,6 +45,7 @@ export default function SkillsSection({
           className="flex-grow border border-gray-300 rounded px-2 py-1"
         />
         <button
+          type="submit"
           onClick={handleAddSkill}
           className="text-purple-600 font-semibold hover:underline"
         >

@@ -61,19 +61,19 @@ export default function Login() {
                     alt="Logo"
                     className="mx-auto mb-6 w-65 h-12"
                 />
-                <h1 className="text-3xl font-semibold mb-2">Login</h1>
+                <h1 className="text-3xl text-gray-800 font-semibold mb-2">Login</h1>
                 <p className="text-gray-600 mb-6">Login to your account below</p>
 
                 <button
                     type="button"
-                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 mb-6 hover:bg-gray-100 transition"
+                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 mb-6 hover:bg-gray-300 transition"
                 >
                     <img
                         src="https://img.icons8.com/color/24/google-logo.png"
                         alt="Google"
-                        className="inline-block"
+                        className="inline-block "
                     />
-                    Continue with Google
+                   <span className="text-gray-800">Continue with Google</span> 
                 </button>
 
                 <form onSubmit={handleLogin} className="space-y-4 text-left">

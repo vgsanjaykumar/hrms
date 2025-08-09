@@ -8,6 +8,7 @@ interface Education {
   startTime: string;
   endTime: string;
   score: string;
+  
 }
 
 interface EducationSectionProps {

@@ -43,32 +43,71 @@ export default function MyProfilePage() {
   const [newSkill, setNewSkill] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/profile', { credentials: 'include' })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch profile');
-        return res.json();
-      })
-      .then(data => {
-        if (data) {
-          const mergedData = {
-            name: data.name || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            gender: data.gender || '',
-            dob: data.dob || '',
-            location: data.location || '',
-            skills: data.skills || [],
-            education: data.education || [],
-            photoUrl: data.image || 'https://via.placeholder.com/150',
-            progress: calculateProgress(data),
-          };
-          setProfile(mergedData);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+ useEffect(() => {
+  fetch('/api/profile', { credentials: 'include' })
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to fetch profile');
+      return res.json();
+    })
+    .then(data => {
+      const localImage = localStorage.getItem('localProfilePhoto');
+      const localEducation = JSON.parse(localStorage.getItem('localEducation') || '[]');
+      const localSkills = JSON.parse(localStorage.getItem('localSkills') || '[]');
+
+      if (data) {
+        const mergedData = {
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          gender: data.gender || '',
+          dob: data.dob || '',
+          location: data.location || '',
+          skills: data.skills?.length > 0 ? data.skills : localSkills,
+          education: data.education?.length > 0 ? data.education : localEducation,
+          photoUrl: localImage || data.image || '',
+          progress: calculateProgress(data),
+        };
+        setProfile(mergedData);
+      } else {
+        // Fallback to local storage if backend fails
+        const localData = {
+          name: '',
+          email: '',
+          phone: '',
+          gender: '',
+          dob: '',
+          location: '',
+          skills: localSkills,
+          education: localEducation,
+          photoUrl: localImage || '',
+          progress: 0,
+        };
+        setProfile(localData);
+      }
+      setLoading(false);
+    })
+    .catch(() => {
+      // Fallback to local storage if backend fails
+      const localImage = localStorage.getItem('localProfilePhoto');
+      const localEducation = JSON.parse(localStorage.getItem('localEducation') || '[]');
+      const localSkills = JSON.parse(localStorage.getItem('localSkills') || '[]');
+      
+      const localData = {
+        name: localStorage.getItem('localName') || '',
+        email: localStorage.getItem('localEmail') || '',
+        phone: localStorage.getItem('localPhone') || '',
+        gender: localStorage.getItem('localGender') || '',
+        dob: localStorage.getItem('localDob') || '',
+        location: localStorage.getItem('localLocation') || '',
+        skills: localSkills,
+        education: localEducation,
+        photoUrl: localImage || '',
+        progress: 0,
+      };
+      setProfile(localData);
+      setLoading(false);
+    });
+}, []);
 
   function calculateProgress(data: any) {
     let total = 6;
@@ -132,14 +171,54 @@ export default function MyProfilePage() {
   };
 
   const saveProfile = async () => {
-    const res = await fetch('/api/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(profile),
-    });
-    const updated = await res.json();
-    setProfile(updated);
+    const updateData = {
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      gender: profile.gender,
+      dob: profile.dob,
+      location: profile.location,
+      skills: profile.skills,
+      education: profile.education,
+      photoUrl: profile.photoUrl,
+    };
+
+    // Always save to localStorage first
+    localStorage.setItem('localName', profile.name);
+    localStorage.setItem('localEmail', profile.email);
+    localStorage.setItem('localPhone', profile.phone);
+    localStorage.setItem('localGender', profile.gender);
+    localStorage.setItem('localDob', profile.dob);
+    localStorage.setItem('localLocation', profile.location);
+    localStorage.setItem('localSkills', JSON.stringify(profile.skills));
+    localStorage.setItem('localEducation', JSON.stringify(profile.education));
+    localStorage.setItem('localProfilePhoto', profile.photoUrl);
+
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(updateData),
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to save profile');
+      }
+      
+      const updatedUser = await res.json();
+      setProfile((prev: any) => ({
+        ...prev,
+        ...updatedUser,
+        photoUrl: updatedUser.image || prev.photoUrl,
+      }));
+      
+    } catch (error) {
+      console.error('Profile save error:', error);
+      // Data is already saved to localStorage, so no need to alert
+      console.log('Profile saved locally as fallback');
+    }
   };
 
   if (loading) return <LoadingOverlay loading={loading} message="Loading profile..." />;

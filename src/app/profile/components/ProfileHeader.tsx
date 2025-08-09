@@ -27,33 +27,43 @@ export default function ProfileHeader({
     >
       <div className="flex items-center space-x-4">
         <div className="md:items-center relative w-32 h-32 rounded-full border-4 border-purple-700 overflow-hidden cursor-pointer">
-          {profile.photoUrl ? (
-              <img
-                src={profile.photoUrl}
-                alt="Profile"
-                className="w-full h-full object-cover rounded-full"
-              />
-              ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-300 rounded-full text-gray-600 text-6xl">
-                <UserOutlined className="h-16 w-16" />
-              </div>
-              )}
+         {profile.photoUrl || profile.image ? (
+  <img
+    src={profile.photoUrl || profile.image}
+    alt="Profile"
+    className="w-full h-full object-cover rounded-full"
+  />
+) : (
+  <div className="w-full h-full flex items-center justify-center bg-gray-300 rounded-full text-gray-600 text-6xl">
+    <UserOutlined className="h-16 w-16" />
+  </div>
+)}
+
             <input
               type="file"
               accept="image/*"
               className="hidden"
               id="profilePhotoInput"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                  setProfile((prev: any) => ({ ...prev, photoUrl: reader.result as string }));
-                  saveProfile();
-                };
-                reader.readAsDataURL(file);
-              }}
-            />
+             onChange={async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const imageDataUrl = reader.result as string;
+    
+    // ✅ Save to localStorage
+    localStorage.setItem('localProfilePhoto', imageDataUrl);
+
+    // ✅ Update state
+    setProfile((prev: any) => ({ ...prev, photoUrl: imageDataUrl }));
+
+    // ✅ Save to backend (if needed)
+    saveProfile();
+  };
+  reader.readAsDataURL(file);
+}}
+/>
             <label
               htmlFor="profilePhotoInput"
               className="absolute bottom-0 right-0 text-white bg-purple-600 rounded-full p-1 cursor-pointer hover:bg-gray-100 hover:text-purple-600  shadow-lg"
@@ -66,10 +76,12 @@ export default function ProfileHeader({
             </label>
             {profile.photoUrl && (
               <button
-                onClick={() => {
-                  setProfile((prev: any) => ({ ...prev, photoUrl: '' }));
-                  saveProfile();
-                }}
+               onClick={() => {
+  localStorage.removeItem('localProfilePhoto'); // 👈 remove from localStorage
+  setProfile((prev: any) => ({ ...prev, photoUrl: '' }));
+  saveProfile();
+}}
+
                 className="absolute -top-3 -right-3 bg-white rounded-full p-1 cursor-pointer hover:bg-gray-100 shadow-lg"
                 title="Remove profile photo"
               >
@@ -114,5 +126,6 @@ export default function ProfileHeader({
         </div>
       </div>
     </div>
+    
   );
 }
